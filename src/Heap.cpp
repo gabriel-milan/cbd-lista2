@@ -31,6 +31,7 @@ void Heap::flush()
 void Heap::ins(const char *string)
 {
   const DataRecord *record = new DataRecord(string, entryCounter); // Initialize record to be inserted
+  entryCounter++;
   this->blockp->write(record);               // Write record in writing block
   this->header->addRecord();
 }
@@ -43,14 +44,10 @@ const DataRecord *Heap::sel(uint32_t uid, bool toDelete)
   {
     for (int i = 0; i < this->blockg->count(); i++)
     {                                // For i = 0 to i = number of reading block's records
+      bool found = 0;
       record = this->blockg->get(i); // Put idx record from block into record variable
-      bool found = 1;                // Initialize boolean found as true
-      if (!record->uidCmp(uid)) {
-        found = 0;
-        break;
-      }
-      if (found)
-      { // If found record with query's cpf return the record
+      if (record->uidCmp(uid)) {
+        found = 1;
         if (toDelete)
         {
           // Replace the current register with 000's:
@@ -73,33 +70,13 @@ const DataRecord *Heap::sel(uint32_t uid, bool toDelete)
 
 std::vector<const DataRecord *>Heap::selMultiple(uint32_t *uids, const int quant)
 {
-  this->pos = this->blockg->read(0);
-  const DataRecord *record;
-  std::vector<const DataRecord *>foundRecords;
-  int found = 0;
-  do
-  {
-    for (int i = 0; i < this->blockg->count(); i++)
-    {
-      record = this->blockg->get(i);
-      for (int j = 0; j < quant; j++)
-      {
-        if (record->uid == uids[j])
-        {
-          foundRecords.push_back(record);
-          found++;
-          break;
-        }
-      }
-      if (found == quant)
-      {
-        std::cout << "All records found " << std::endl;
-        return foundRecords;
-      }
-    }
-  } while ((this->pos = this->blockg->read(this->pos)) > 0);
-  std::cout << "Not all records found " << std::endl;
-  return foundRecords;
+  std::vector<const DataRecord *> output;
+  for (int i = 0; i < quant; i++) {
+    const DataRecord *selectResult = this->sel(uids[i]);
+    if (!(selectResult == nullptr))
+      output.push_back(selectResult);
+  }
+  return output;
 }
 
 std::vector<const DataRecord *>Heap::selRange(float geracaoBegin, float geracaoEnd)

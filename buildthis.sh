@@ -6,6 +6,9 @@ if [ -d "$BUILD_DIR" ]; then
     rm -rf "$BUILD_DIR";
 fi
 
+rm *.cbd
+rm *.cbdh
+
 mkdir build
 cd build
 cmake ..

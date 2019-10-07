@@ -57,7 +57,7 @@ void testSelectMultiple(DATA_STRUCT* db)
 {
   cout << "Selecting multiple..." << endl;
   uint32_t uids [] = {0, 1, 2};
-  const std::vector<const DataRecord *> records = db->selMultiple(uids, 1);
+  const std::vector<const DataRecord *> records = db->selMultiple(uids, 3);
   for (int i = 0; i < records.size(); i++)
   {
     cout << "Registro " << i << ": " << records[i][0] << endl;
