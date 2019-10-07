@@ -12,6 +12,7 @@ Heap::Heap()
   this->blockp = new Block(dataFilename.c_str(), 'w'); // Initialize writing block
   this->blockg = new Block(dataFilename.c_str(), 'r'); // Initialize reading block
   this->header = new Header(headerFilename);
+  this->entryCounter = 0;
 }
 
 Heap::~Heap()
@@ -29,7 +30,7 @@ void Heap::flush()
 
 void Heap::ins(const char *string)
 {
-  const DataRecord *record = new DataRecord(string); // Initialize record to be inserted
+  const DataRecord *record = new DataRecord(string, entryCounter); // Initialize record to be inserted
   this->blockp->write(record);               // Write record in writing block
   this->header->addRecord();
 }
@@ -44,7 +45,7 @@ const DataRecord *Heap::sel(uint32_t uid, bool toDelete)
     {                                // For i = 0 to i = number of reading block's records
       record = this->blockg->get(i); // Put idx record from block into record variable
       bool found = 1;                // Initialize boolean found as true
-      if (record->uid != uid) {
+      if (!record->uidCmp(uid)) {
         found = 0;
         break;
       }
