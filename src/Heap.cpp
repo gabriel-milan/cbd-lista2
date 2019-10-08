@@ -63,7 +63,9 @@ const DataRecord *Heap::sel(uint32_t uid, bool toDelete)
         return record;
       }
     }
-  } while ((this->pos = this->blockg->read(this->pos)) > 0); // While have records in block
+    int t = this->blockg->read(this->pos);
+      this->pos = t == -1 ? 0 : t;
+  } while ( this->pos > 0); // While have records in block
   std::cout << "No record with UID = " << uid << std::endl;
   return nullptr;
 }
@@ -90,18 +92,27 @@ std::vector<const DataRecord *>Heap::selRange(float geracaoBegin, float geracaoE
     for (int i = 0; i < this->blockg->count(); i++)
     {
       record = this->blockg->get(i);
-      // if (record->geracaoInRange(geracaoBegin, geracaoEnd))
-      // {
-      //   foundRecords.push_back(record);
-      //   found++;
-      // }
+      if (record->geracaoInRange(geracaoBegin, geracaoEnd))
+      {
+        foundRecords.push_back(record);
+        found++;
+      }
     }
-  } while ((this->pos = this->blockg->read(this->pos)) > 0);
+    int t = this->blockg->read(this->pos);
+    this->pos = t == -1 ? 0 : t;
+  } while (this->pos > 0);
   return foundRecords;
+}
+
+void Heap::insMulti(const char **string, const int quant)
+{
+  for (int i = 0; i < quant; i++){
+    ins(string[i]);
+  }
 }
 
 void Heap::del(uint32_t uid)
 {
   // Seek and destroy:
-  Heap::sel(uid, true);
+  this->sel(uid, true);
 }

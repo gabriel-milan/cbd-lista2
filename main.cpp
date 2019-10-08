@@ -6,9 +6,13 @@
 #include "include/Sorted.h"
 #include "include/Hash.h"
 
-#define DATA_STRUCT Heap
+#define DATA_STRUCT Sorted
 
 using namespace std;
+
+void println (std::string text) {
+  cout << text << endl;
+}
 
 void printBlocks(DATA_STRUCT* db)
 {
@@ -20,7 +24,7 @@ void initDb(DATA_STRUCT* db)
 {
   cout << "Initializing DB (loading from CSV file)..." << endl;
   string line;
-  ifstream infile("data/gh.csv");
+  ifstream infile("data/new.csv");
   getline(infile, line);
   if (infile.is_open())
   {
@@ -28,8 +32,12 @@ void initDb(DATA_STRUCT* db)
     {
       db->ins(line.c_str());
     }
+    println("All inserts ok");
     infile.close();
     db->flush();
+  }
+  else {
+    println ("Failed to open file");
   }
   printBlocks(db);
   cout << endl;
@@ -56,8 +64,8 @@ void testSelect(DATA_STRUCT* db)
 void testSelectMultiple(DATA_STRUCT* db)
 {
   cout << "Selecting multiple..." << endl;
-  uint32_t uids [] = {0, 1, 2};
-  const std::vector<const DataRecord *> records = db->selMultiple(uids, 3);
+  uint32_t uids [] = {10, 11};
+  const std::vector<const DataRecord *> records = db->selMultiple(uids, 2);
   for (int i = 0; i < records.size(); i++)
   {
     cout << "Registro " << i << ": " << records[i][0] << endl;
@@ -69,9 +77,9 @@ void testSelectMultiple(DATA_STRUCT* db)
 void testSelectRange(DATA_STRUCT *db)
 {
   cout << "Select range..." << endl;
-  uint32_t uidBegin = 0;
-  uint32_t uidEnd = 15;
-  const std::vector<const DataRecord *> records = db->selRange(uidBegin, uidEnd);
+  float geracaoBegin = 0;
+  float geracaoEnd = 300;
+  const std::vector<const DataRecord *> records = db->selRange(geracaoBegin, geracaoEnd);
   for (int i = 0; i < records.size(); i++)
   {
     cout << "Registro " << i << ": " << records[i][0] << endl;
@@ -102,13 +110,13 @@ int main(int argc, char **argv)
   // Select
   testSelect(&db);
 
-  // Select multiple
+  // // Select multiple
   testSelectMultiple(&db);
 
-  // Select range
-  // testSelectRange(&db);
-
-  // Delete
-  // testDelete(&db);
+  // // Select range
+  testSelectRange(&db);
   
+  // // Delete
+  testDelete(&db);
+
 }

@@ -53,24 +53,30 @@ void Block::write(const DataRecord *r, const int pos)
   {                  // If block is full
     this->persist(pos); // Persists block in disk
   }
+
+  // std::cout << *r << std::endl;
   this->records[this->recordsNumber] = r; // Write record in records member
   this->recordsNumber++;                  // Increment number of records
 }
 
 int Block::read(const uint64_t pos)
 {
+        // std::cout << "F" << std::endl;
+
   this->blocks_used++;
   // std::cout << "Pos = " << pos << std::endl;
   this->reset();
+  this->file.seekg(0);
   this->file.seekg(pos);
   std::string line;
-  // std::cout << "for i to " << (Block::MAX_SIZE / sizeof(Record)) << std::endl;
+  // std::cout << "for i to " << (Block::MAX_SIZE / sizeof(DataRecord)) << std::endl;
   for (uint32_t i = 0; i < (Block::MAX_SIZE / sizeof(DataRecord)); i++)
   {
     // std::cout << "i = " << i << std::endl;
-    // std::getline(this->file, line, '5');
+        // std::cout << "D" << std::endl;
+    // std::getline(this->file, line, '\n');
     // std::cout << "line = " << line.c_str() << std::endl;
-    if (!std::getline(this->file, line))
+    if (!std::getline(this->file, line, '\n'))
     {
       // std::cout << "error" << std::endl;
       if (this->file.eof())
@@ -78,10 +84,16 @@ int Block::read(const uint64_t pos)
       else
         return -1;
     }
-    DataRecord *record = new DataRecord(line.c_str());
-    // std::cout << "record = " << *record << std::endl;
-    this->records[i] = record;
-    this->recordsNumber++;
+            // std::cout << line.c_str() << std::endl;
+    try {
+      DataRecord *record = new DataRecord(line.c_str());
+      // std::cout << "record = " << *record << std::endl;
+      this->records[i] = record;
+      this->recordsNumber++;
+    }
+    catch (int err) {
+      std::cout << "Failed to parse \"" << line.c_str() << "\"" << std::endl;
+    }
   }
   return this->file.tellg();
 }
@@ -112,11 +124,10 @@ void Block::reset()
 // Replaces register in registers[reg] with a bunch of 000's. Then writes to file in pos +- offset:
 void Block::nullify(int reg, int pos, const char* path){
     // This is the null register that will replace the one we will delete:
-    const char allZeroChar[] = "0,0,0,0000000000000,0.0";
+    const char allZeroChar[] = "0,0,0,000000000000,0.0";
     DataRecord *record = new DataRecord(allZeroChar);
     delete (this->records[reg]);  // Frees space occupied by old record
     this->records[reg] = record;  // Replaces that specific record with all 0, essentially deleting it
-
     // Custom-persist block to file. We write the whole block, which includes the modified register:
     std::fstream zeroFile;
     zeroFile.open(path);

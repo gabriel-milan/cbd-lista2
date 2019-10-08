@@ -24,11 +24,14 @@
 // void Hash::ins(const char *string)
 // {
 //   const DataRecord *record = new DataRecord(string);
-//   std::string uidString = std::to_string(record->uid);
-//   int hashPos = hashFunction(uidString)/1000000000000000;
+//   char id[11];
+//   memcpy(cpf,record->cpf,11);
+//   cpf[11]='\0';
+//   std::string cpfString(cpf);
+//   int hashPos = hashFunction(cpfString)/1000000000000000;
 
 //   // Retrieves file:
-//   std::ifstream in(filename, std::ifstream::ate | std::ifstream::binary);
+//   std::ifstream in(HASH_DISK, std::ifstream::ate | std::ifstream::binary);
 //   // Fill remainder of file with null:
 //   while (in.tellg()+128 < hashPos){
 // 	  in << 0x00;

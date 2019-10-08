@@ -9,6 +9,27 @@ std::ostream &print(std::ostream &out, const char *str, size_t sz) {
   return out;
 }
 
+DataRecord::DataRecord(const char *string) {
+  std::stringstream ss(string);
+  std::vector<std::string> columnValues;
+
+  // std::cout << string << std::endl;
+
+  while (ss.good()) {
+    std::string substr;
+    getline(ss, substr, ',');
+    columnValues.push_back(substr);
+  }
+
+  this->uid = std::stoi (columnValues[0]);
+  this->uhe = std::stoi (columnValues[1]);
+  this->cenario = std::stoi (columnValues[2]);
+  this->estagio = columnValues[3];
+  this->geracao = std::stof (columnValues[4]);
+  
+  // std::cout << this->uid << std::endl;
+}
+
 DataRecord::DataRecord(const char *string, uint64_t uid) {
   std::stringstream ss(string);
   std::vector<std::string> columnValues;
@@ -23,19 +44,22 @@ DataRecord::DataRecord(const char *string, uint64_t uid) {
 
   this->uhe = std::stoi (columnValues[0]);
   this->cenario = std::stoi (columnValues[1]);
-  strcpy(this->estagio, columnValues[2].c_str());
+  this->estagio = columnValues[2];
   this->geracao = std::stof (columnValues[3]);
 
   this->uid = uid;
+  
+
+  // std::cout << this->uid << std::endl;
 }
 
 std::ostream &operator<<(std::ostream &out, const DataRecord &r) {
   out << r.uid << ',';
   out << r.uhe << ',';
   out << r.cenario << ',';
-  print(out, r.estagio, sizeof(r.estagio));
-  out << r.geracao << ',';
-  return out << std::endl;
+  out << r.estagio << ',';
+  out << r.geracao;
+  return out << '\n';
 }
 
 bool DataRecord::operator<(const DataRecord &r) const {
@@ -66,6 +90,6 @@ bool DataRecord::uidCmp(uint32_t uid) const {
   return uid == this->uid;
 }
 
-bool DataRecord::geracaoInRange (float begin, float end) {
+bool DataRecord::geracaoInRange (float begin, float end) const {
   return ((this->geracao >= begin) && (this->geracao <= end));
 }

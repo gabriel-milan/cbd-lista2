@@ -15,14 +15,14 @@ class DataRecord {
   public:
     uint32_t uid;
     int uhe, cenario;
-    char estagio [13];
+    std::string estagio;
     float geracao;
 
-    DataRecord (const char data[]) : DataRecord(data, -1) {};
+    DataRecord (const char data[]);
     DataRecord (const char data[], uint64_t uid);
 
     bool uidCmp(uint32_t uid) const;
-    bool geracaoInRange (float begin, float end);
+    bool geracaoInRange (float begin, float end) const;
 
     friend std::ostream &operator<<(std::ostream &out, const DataRecord &r);
     bool operator<(const DataRecord &r) const;

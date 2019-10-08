@@ -20,6 +20,7 @@ public:
   void flush();
 
   void ins(const char *record);
+  void insMulti(const char **record, const int quant);
   const DataRecord *sel(uint32_t uid, bool toDelete=false);
   std::vector<const DataRecord *>selMultiple(uint32_t *uids, const int quant);
   std::vector<const DataRecord *>selRange(float geracaoBegin, float geracaoEnd);

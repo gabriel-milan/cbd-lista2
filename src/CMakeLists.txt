@@ -6,9 +6,9 @@ add_library(Hash Hash.cpp)
 add_library(Header Header.cpp)
 add_library(Heap Heap.cpp)
 add_library(Schema Schema.cpp)
+add_library(Sorted Sorted.cpp)
 
 target_link_libraries(Heap Block)
 target_link_libraries(Heap Header)
 target_link_libraries(Header Schema)
 target_link_libraries(Header Column)
-
