@@ -29,9 +29,10 @@ void Sorted::flush()
   this->blockp->persist();
   this->header->write();
   if (this->sorted == false){
-    std::cout<<"Chamei o sort()"<<std::endl;
+    // std::cout<<"Chamei o sort()"<<std::endl;
+    std::cout<<"Sorting..."<<std::endl;
     this->sort();
-    std::cout<<"Saí do sort()"<<std::endl;
+    // std::cout<<"Saí do sort()"<<std::endl;
     this->sorted = true;
   }
 }

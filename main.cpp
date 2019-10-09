@@ -4,9 +4,8 @@
 
 #include "include/Heap.h"
 #include "include/Sorted.h"
-#include "include/Hash.h"
 
-#define DATA_STRUCT Sorted
+#define DATA_STRUCT Heap
 
 using namespace std;
 
@@ -24,7 +23,7 @@ void initDb(DATA_STRUCT* db)
 {
   cout << "Initializing DB (loading from CSV file)..." << endl;
   string line;
-  ifstream infile("data/new.csv");
+  ifstream infile("data/gh.csv");
   getline(infile, line);
   if (infile.is_open())
   {
@@ -77,8 +76,8 @@ void testSelectMultiple(DATA_STRUCT* db)
 void testSelectRange(DATA_STRUCT *db)
 {
   cout << "Select range..." << endl;
-  float geracaoBegin = 0;
-  float geracaoEnd = 300;
+  float geracaoBegin = 1;
+  float geracaoEnd = 1.2;
   const std::vector<const DataRecord *> records = db->selRange(geracaoBegin, geracaoEnd);
   for (int i = 0; i < records.size(); i++)
   {

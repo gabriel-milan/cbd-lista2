@@ -2,7 +2,6 @@
 add_library(Block Block.cpp)
 add_library(Column Column.cpp)
 add_library(DataRecord DataRecord.cpp)
-add_library(Hash Hash.cpp)
 add_library(Header Header.cpp)
 add_library(Heap Heap.cpp)
 add_library(Schema Schema.cpp)
